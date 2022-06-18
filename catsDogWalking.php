@@ -80,7 +80,7 @@
 			print ("<TR>");
 			for ($weekday = 1; $weekday <= 7; $weekday++)
 			{
-				?><TD vertical-align="top" height="50" width="50" id="<?php print ("day" . $day);?>"
+				?><TD vertical-align="top" height="50" width="50" id="<?php print ($day);?>"
 				</TD><?php
 				$day++; 
 			}
