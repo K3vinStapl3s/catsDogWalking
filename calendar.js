@@ -3,14 +3,23 @@
 */
 
 //This event listener fires on click but runs the openBookAppointment function
-document.getElementById('nextMonth').addEventListener('click', function() {nextMonth()});
+document.getElementById('nextMonth').addEventListener('click', function() { nextMonth() });
 //This event listener fires but fires every onclick listener inside the build calendar function opening 35 popups on load
 document.addEventListener('load', buildCalendar());
+//BSNote: You can't add the events onto the td's from a reference to the table like the table.row.cell 
+//you would have needed to go and get the elements the whole getElementById for each one then add the event listener but below
+//is a slightly cleaner way taking advantage of the builtin event target so when a click event happens it will tell you which element is clicked so by
+//adding the event to the entire calender any click inside will trigger this then it will tell you where is clicked 
+//(you may need to add some logic to do nothing if not a td is clicked currently clicking the header will trigger with an empty string for the id)
+//also since the event is just attached to the calendar it's a little cleaner to just add this at the top instead of re-adding it each time the month 
+//changes as it no longer matters
+document.getElementById('calendar').addEventListener('click', function(event) { openBookAppointment(event.target.id) });
 
 
 //rebuilds calendar after adjustments have been made to date ie. setting date to prior or next month
 //This has 3 event listeners that are never fired
-function buildCalendar(newDate)
+//BSNote: There is no function overloading in JS (stupid I agree) so it needed a unique name previously this method would never be called and it just recalled the bottom one
+function buildNewCalendar(newDate)
 {
 	var dt = newDate;
 
@@ -28,8 +37,6 @@ function buildCalendar(newDate)
 			{
 				
 				calendar.rows[r].cells[c].innerHTML = weekday;
-//This should set the cell to open bookAppointment.php
-				calendar.rows[r].cells[c].addEventListener('click', openBookAppointment(id));
 				c++;
 				weekday++;
 			}
@@ -37,16 +44,12 @@ function buildCalendar(newDate)
 			if (day <= daysInMonth[dt.getMonth()])
 			{
 				calendar.rows[r].cells[c].innerHTML = (day);
-//This should set the cell to open bookAppointment.php
-				calendar.rows[r].cells[c].addEventListener('click', openBookAppointment(calendar.rows[r].cells[c].id));
 				day++;
 			}
 			else
 			{
 				day = 1;
 				calendar.rows[r].cells[c].innerHTML = (day);
-//This should set the cell to open bookAppointment.php
-				calendar.rows[r].cells[c].addEventListener('click', openBookAppointment(calendar.rows[r].cells[c].id));
 				day++;
 			}
 		}
@@ -61,7 +64,7 @@ function openBookAppointment(tdElementId)
 	dt.setMonth(monthName.indexOf(document.getElementById("month").innerHTML) + 1);
 	var day = tdElementId;
 	dt.setDate(document.getElementById(tdElementId).innerHTML);
-	dt.setFullYear(document.getElementById('year'));
+	dt.setFullYear(document.getElementById('year').innerHTML); //BSNote: missing the innerHTML so was causing the popup to fail
 	if (day < 7 && dt.getDate() > 20)
 	{
 		if (dt.getMonth() == 1)
@@ -107,29 +110,22 @@ function buildCalendar()
 			while  (r == 1 && c < dt.getDay())
 			{
 				calendar.rows[r].cells[c].innerHTML = weekday;
-//This event listener fires on load but doesn't create a click event in the cell I'm trying to target
-				calendar.rows[r].cells[c].addEventListener('click', openBookAppointment(calendar.rows[r].cells[c].id));
 				c++;
 				weekday++;
 			}
 			if (day <= daysInMonth[dt.getMonth()])
 			{	
 				calendar.rows[r].cells[c].innerHTML = (day);
-//This event listener fires on load but doesn't create a click event in the cell I'm trying to target
-				calendar.rows[r].cells[c].addEventListener('click', openBookAppointment(calendar.rows[r].cells[c].id));
 				day++;
 			}
 			else
 			{
 				day = 1;
 				calendar.rows[r].cells[c].innerHTML = (day);
-//This event listener fires on load but doesn't create a click event in the cell I'm trying to target
-				calendar.rows[r].cells[c].addEventListener('click', openBookAppointment(calendar.rows[r].cells[c].id));
 				day++;
 			}
 		}
-	}
-	
+	}	
 }
 
 //sets the date of the next month and submits to buildCalendar(newDate)
@@ -149,5 +145,5 @@ function nextMonth()
 		newDate.setMonth(0);
 		newDate.setFullYear(newDate.getFullYear() + 1);
 	}
-	buildCalendar(newDate);
+	buildNewCalendar(newDate);
 }
