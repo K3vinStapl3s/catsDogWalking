@@ -1,0 +1,10 @@
+.topnav {
+    background-color: green;
+    color: white !important;
+    width: max-content;
+}
+
+.topnav a:hover {
+    background-color: lightgreen;
+    color: black !important;
+}

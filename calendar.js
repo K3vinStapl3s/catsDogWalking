@@ -13,7 +13,7 @@ document.addEventListener('load', buildCalendar());
 //(you may need to add some logic to do nothing if not a td is clicked currently clicking the header will trigger with an empty string for the id)
 //also since the event is just attached to the calendar it's a little cleaner to just add this at the top instead of re-adding it each time the month 
 //changes as it no longer matters
-document.getElementById('calendar').addEventListener('click', function(event) { if !(event.target.id == null) openBookAppointment(event.target.id) });
+document.getElementById('calendar').addEventListener('click', function(event) { if (!(event.target.id == null)) openBookAppointment(event.target.id) });
 
 
 //rebuilds calendar after adjustments have been made to date ie. setting date to prior or next month
