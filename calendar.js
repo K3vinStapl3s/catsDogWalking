@@ -1,34 +1,39 @@
 /*
-	This is the page that needs attention as far as I can tell, the other page uses a combination of php and html and the code that fires this javascript is contained in the "buildCalendar" function in "catsDogWalking.php"
+	Author:		William Stoddart
+	Date:		6/18/2022
+	Purpose:	Dynamically generates the content of a calendar and changes it to next or prior month
+				uses the calendar to open a php generated web page.
+PHP file call location:	Line 28
 */
 
-//This event listener fires on click but runs the openBookAppointment function
+//Event Listener for the 'nextMonth' button element nextMonth() function on click which calls buildNewCalendar(newDate)
+//repopulating the calendar element
 document.getElementById('nextMonth').addEventListener('click', function() { nextMonth() });
-//This event listener fires but fires every onclick listener inside the build calendar function opening 35 popups on load
+
+//Event Listener populates the 'calendar' element with days of the month
+// as well as populating the 'month' and 'year' elements with appropriate text
 document.addEventListener('load', buildCalendar());
-//BSNote: You can't add the events onto the td's from a reference to the table like the table.row.cell 
-//you would have needed to go and get the elements the whole getElementById for each one then add the event listener but below
-//is a slightly cleaner way taking advantage of the builtin event target so when a click event happens it will tell you which element is clicked so by
-//adding the event to the entire calender any click inside will trigger this then it will tell you where is clicked 
-//(you may need to add some logic to do nothing if not a td is clicked currently clicking the header will trigger with an empty string for the id)
-//also since the event is just attached to the calendar it's a little cleaner to just add this at the top instead of re-adding it each time the month 
-//changes as it no longer matters
-document.getElementById('calendar').addEventListener('click', function(event) { if !(event.target.id == null) openBookAppointment(event.target.id) });
+
+//Event Listener for any click events within the calendar element, 
+//if the target ID is not empty opens "bookAppointment.php?date=(decision based on target ID)
+document.getElementById('calendar').addEventListener('click', function(event) { if (event.target.id != "") openBookAppointment(event.target.id) });
 
 
-//rebuilds calendar after adjustments have been made to date ie. setting date to prior or next month
-//This has 3 event listeners that are never fired
-//BSNote: There is no function overloading in JS (stupid I agree) so it needed a unique name previously this method would never be called and it just recalled the bottom one
+//Repopulates the calendar element using the date passed in by nextMonth() or priorMonth()
 function buildNewCalendar(newDate)
 {
+	//Variable declaration
 	var dt = newDate;
-
 	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	const daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+	var calendar = document.getElementById('calendar');
+	var priorMonthDay = (daysInMonth[dt.getMonth() -1 ]-(dt.getDay()-1));
+	
+	//sets 'month' and 'year' elements text 
 	document.getElementById('month').innerHTML = monthName[dt.getMonth()];
 	document.getElementById('year').innerHTML = dt.getFullYear();
-	var calendar = document.getElementById('calendar');
-	var weekday = (daysInMonth[dt.getMonth() -1 ]-(dt.getDay()-1));
+	
+	//loops through the 'calendar' element setting cell text to the appropriate day
 	for (let r = 1, day = 1; r <= 5; r++)
 	{
 		for (let c = 0; c < 7; c++)
@@ -36,9 +41,9 @@ function buildNewCalendar(newDate)
 			while  (r == 1 && c < dt.getDay())
 			{
 				
-				calendar.rows[r].cells[c].innerHTML = weekday;
+				calendar.rows[r].cells[c].innerHTML = priorMonthDay;
 				c++;
-				weekday++;
+				priorMonthDay++;
 			}
 			
 			if (day <= daysInMonth[dt.getMonth()])
@@ -56,15 +61,24 @@ function buildNewCalendar(newDate)
 	}
 }
 
-// sets each cell of the calendar with a click listener that opens boookAppointment.php
+//Used by a Click Listener attached to the calendar element which passes in Element ID of the cell clicked
+// uses that information along with the 'month' and 'year' elements to open a new window with the URL
+// 'bookAppointment.php?date=6-12-2022' the date is dynamically generated 6-12-2022 is an example
 function openBookAppointment(tdElementId)
 {
+	//variable declaration
 	var dt = new Date(Date.now());
 	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var day = parseInt(tdElementId);
+	
+	//sets the month, day, and year of dt based on the text of the <TD> element passed in, and the 'month' and 'year' elements
 	dt.setMonth(monthName.indexOf(document.getElementById("month").innerHTML) + 1);
-	var day = int(tdElementId);
 	dt.setDate(document.getElementById(tdElementId).innerHTML);
-	dt.setFullYear(document.getElementById('year').innerHTML); //BSNote: missing the innerHTML so was causing the popup to fail
+	dt.setFullYear(document.getElementById('year').innerHTML);
+	
+	//determines if the month and/or year need to change and changes them based on whether the the cell clicked is in the first
+	//or last row and whether the text of the cell is greater than 20 or less than 10 respectively
+	//year changes based on whether the month would increases past 12 or decrease below 1
 	if (day < 7 && dt.getDate() > 20)
 	{
 		if (dt.getMonth() == 1)
@@ -85,33 +99,40 @@ function openBookAppointment(tdElementId)
 		else
 			dt.setMonth(dt.getMonth() + 1);
 	}
+	
+	//declares the urlString variable then uses that variable to open the new bookAppointment.php window
 	var urlString = "bookAppointment.php?date=" + dt.getMonth() + "-" + dt.getDate() + "-" + dt.getFullYear();
 	window.open(urlString, "BookAppointment", "height=250, width=350, resizable=no, toolbar=no, menubar=no, location=no");
 }
 
-// fills the initial calendar table for the scheduling page
-// This is the function called in the onload listener at the top of code
-// contains 3 event listeners
+// function called by an onLoad event listener populates the 'calendar' element on initial page load using the current
+// date to set the 'calendar' element to the current month and year also sets the 'month' and 'year' elements
 function buildCalendar()
 {
+	// variable declaration
 	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	const daysInMonth = [31,28,31,30,31,30,31,31,30,31,31,30];
 	var dt = new Date(Date.now());
+	var calendar = document.getElementById('calendar');
+	var priorMonthDay = (daysInMonth[dt.getMonth() - 1]-(dt.getDay()-1));
+	
+	// setting dt variable to 1 to start populating calendar from 1
 	dt.setDate(1);
+	
+	//sets text for the 'month' and 'year' elements
 	document.getElementById('month').innerHTML = monthName[dt.getMonth()];
 	document.getElementById('year').innerHTML = dt.getFullYear();
-	var calendar = document.getElementById('calendar');
-	var weekday = (daysInMonth[dt.getMonth() - 1]-(dt.getDay()-1));
-
+	
+	//loops through the calendar object setting the text of each cell
 	for (let r = 1, day = 1; r <= 5; r++)
 	{
 		for (let c = 0; c < 7; c++)
 		{
 			while  (r == 1 && c < dt.getDay())
 			{
-				calendar.rows[r].cells[c].innerHTML = weekday;
+				calendar.rows[r].cells[c].innerHTML = priorMonthDay;
 				c++;
-				weekday++;
+				priorMonthDay++;
 			}
 			if (day <= daysInMonth[dt.getMonth()])
 			{	
@@ -129,7 +150,6 @@ function buildCalendar()
 }
 
 //sets the date of the next month and submits to buildCalendar(newDate)
-//This is what the onclick listener at the top of page should fire
 function nextMonth()
 {
 	var newDate = new Date(Date.now());

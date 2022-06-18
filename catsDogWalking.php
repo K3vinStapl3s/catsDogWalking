@@ -4,6 +4,8 @@
 	Date:	6/13/22
 -->
 <?PHP
+	// Checks to see if there is a variable passed through the URL assigns that variable to $pageName so
+	// The appropriate page can be generated if null the homepage will be generated
 	if (isset($_GET['page']))
 		$pageName = ($_GET['page']);
 	else 
@@ -18,20 +20,20 @@
 		</HEAD>
 		<BODY>
 			<DIV class="content">
-			<?php buildPage($pageName); ?>
+			
+			<?php buildPage($pageName); // calls buildPage() to generate content?>
 			</DIV>
 		</BODY>
+		<!--Loads javascript for the "Scheduling" Page from the calendar.js file-->
 		<?php if ($pageName == "Scheduling") print ('<SCRIPT type="text/javascript" src="calendar.js"></script>');?>
+		<SCRIPT type="text/javascript" src="menu.js"></script>
 	</HTML
 		
 <?php
+	// Uses the variable passed in through the url to call the appropriate function to generate content
 	function buildPage($pName)
 	{
-		if ($pName == "Home" || $pName == null)
-		{
-			buildHome();
-		}
-		elseif  ($pName == "About")
+		if  ($pName == "About")
 		{
 			buildAbout();
 		}
@@ -39,9 +41,21 @@
 		{
 			buildCalendar();
 		}
+		elseif ($pName == "About")
+		{
+			buildAbout();
+		}
+		elseif ($pName == "About")
+		{
+			buildAbout();
+		}
+		elseif ($pName == "Contact")
+		{
+			buildContact();
+		}
 		else
 		{
-			print ("I Haven't Built this yet");
+			buildHome();
 		}
 	}
 	
@@ -80,7 +94,7 @@
 			print ("<TR>");
 			for ($weekday = 1; $weekday <= 7; $weekday++)
 			{
-				?><TD vertical-align="top" height="50" width="50" id="<?php print ($day);?>"
+				?><TD vertical-align="top" height="50" width="50" id="<?php print ($day);?>">
 				</TD><?php
 				$day++; 
 			}
@@ -94,12 +108,12 @@
 	{
 		print ("
 			<H1>Cat's Dog Walking</H1>
-			<div class=\"topnav\" background-color=\"green\" text=\white\">
-				<a class=\"active\" href=\"catsDogWalking.php?page=Home\");\">Home</a>
-				<a href=\"catsDogWalking.php?page=About\">About Us</a>
-				<a href=\"catsDogWalking.php?page=Services\">Services</a>
-				<a href=\"catsDogWalking.php?page=Scheduling\">Schedule Appointment</a>
-				<a href=\"catsDogWalking.php?page=Contact\">Contact Us</a>
+			<div id=\"menu\" class=\"topnav\" background-color=\"green\" text=\white\">
+				<a id=\"menu1\" href=\"catsDogWalking.php?page=Home\");\">Home</a>
+				<a id=\"menu2\" href=\"catsDogWalking.php?page=About\">About Us</a>
+				<a id=\"menu3\" href=\"catsDogWalking.php?page=Services\">Services</a>
+				<a id=\"menu4\" href=\"catsDogWalking.php?page=Scheduling\">Schedule Appointment</a>
+				<a id=\"menu5\" href=\"catsDogWalking.php?page=Contact\">Contact Us</a>
 			</div>
 		");
 	}
