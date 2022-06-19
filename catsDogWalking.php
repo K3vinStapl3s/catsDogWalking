@@ -14,7 +14,7 @@
 	<!--Page Layout-->
 	<HTML>
 		<HEAD>
-			<LINK rel="stylesheet" href="sample.css">
+			<LINK rel="stylesheet" href="catsDogWalking.css">
 			<TITLE>Cat's Dog Walking</TITLE>
 			
 		</HEAD>

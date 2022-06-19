@@ -16,8 +16,7 @@ document.addEventListener('load', buildCalendar());
 
 //Event Listener for any click events within the calendar element, 
 //if the target ID is not empty opens "bookAppointment.php?date=(decision based on target ID)
-document.getElementById('calendar').addEventListener('click', function(event) { if (event.target.id != "") openBookAppointment(event.target.id) });
-
+document.getElementById('calendar').addEventListener('click', function(event) { if (!(event.target.id == null)) openBookAppointment(event.target.id) });
 
 //Repopulates the calendar element using the date passed in by nextMonth() or priorMonth()
 function buildNewCalendar(newDate)
