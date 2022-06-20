@@ -4,7 +4,7 @@
 	Purpose:	Change the appearance of the navbar based on active page and mouse hover
 	PHP file call location: Line 29
 */
-
+/*
 //sets mouseOver event listener that calls mouseOverClassChange
 document.getElementById('menu').addEventListener('mouseover', function(event) { mouseOverClassChange(event.target); });
 
@@ -49,4 +49,4 @@ function setActive()
 		}
 	}
 }
-
+*/

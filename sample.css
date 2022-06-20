@@ -34,7 +34,7 @@ option	{ font-family: Arial, Helvetica, Sans-serif; font-size:10pt;
 	font-size: 17px;
 }
 
-.topnav a.hover	{
+.topnav a:hover	{
 	background-color: #ddd;
 	color: black
 }
@@ -57,7 +57,16 @@ option	{ font-family: Arial, Helvetica, Sans-serif; font-size:10pt;
 	width: 50;
 	vertical-align: top;
 	text-align: center;
-
 }
+
+.button button.active	{
+	background: #04AA6D;
+	color: white;
+}
+
+.button button.inactive	{
+	background: gray;
+	color: black;
+	cursor: not-allowed;
 
 

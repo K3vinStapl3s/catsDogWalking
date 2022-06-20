@@ -14,7 +14,7 @@
 	<!--Page Layout-->
 	<HTML>
 		<HEAD>
-			<LINK rel="stylesheet" href="catsDogWalking.css">
+			<LINK rel="stylesheet" href="sample.css">
 			<TITLE>Cat's Dog Walking</TITLE>
 			
 		</HEAD>
@@ -26,7 +26,6 @@
 		</BODY>
 		<!--Loads javascript for the "Scheduling" Page from the calendar.js file-->
 		<?php if ($pageName == "Scheduling") print ('<SCRIPT type="text/javascript" src="calendar.js"></script>');?>
-		<SCRIPT type="text/javascript" src="menu.js"></script>
 	</HTML
 		
 <?php
@@ -35,42 +34,42 @@
 	{
 		if  ($pName == "About")
 		{
-			buildAbout();
+			buildAbout($pName);
 		}
 		elseif ($pName == "Scheduling")
 		{
-			buildCalendar();
+			buildCalendar($pName);
 		}
 		elseif ($pName == "About")
 		{
-			buildAbout();
+			buildAbout($pName);
 		}
 		elseif ($pName == "About")
 		{
-			buildAbout();
+			buildAbout($pName);
 		}
 		elseif ($pName == "Contact")
 		{
-			buildContact();
+			buildContact($pName);
 		}
 		else
 		{
-			buildHome();
+			buildHome($pName);
 		}
 	}
 	
-	function buildAbout()
+	function buildAbout($pageName)
 	{
 		print ("<TABLE align=\"center\" width=\"960\"><TR>");
-		buildMenu();
+		buildMenu($pageName);
 		print ("</TR><TR><p>This is where the about me goes</p></TR></TABLE>");
 		
 	}
 
-	function buildHome()
+	function buildHome($pageName)
 	{
 		print ("<TABLE align=\"center\" width=\"960\"><TR>");
-		buildMenu();
+		buildMenu($pageName);
 		print ("
 				</TR><TR><p>Welcome to my new dog walking website there will be photos up soon to help fill out the home page.<br/>
 					my name's Mary-Cat, an entreprenour and avid animal lover and I'm assisted in my endeavors by my husband Kevin.<br/>
@@ -80,9 +79,9 @@
 		");
 	}
 	
-	function buildCalendar()
+	function buildCalendar($pageName)
 	{
-		buildMenu();
+		buildMenu($pageName);
 		
 		print ("<H2><DIV id=\"month\"></DIV></h2><H3><DIV id=\"year\"></DIV></H3>");
 		print ("<TABLE border=\"1\" id=\"calendar\" width=\"750\">");
@@ -101,19 +100,20 @@
 			print ("</TR>");
 		}
 		print ("</TABLE>");
-		?><button type="button" id="nextMonth">Next Month</button><?php
+		?><DIV class="button"><button class="inactive" type="button" id="priorMonth">Prior Month</button>
+		<button class="active" type="button" id="nextMonth">Next Month</button></DIV><?php
 	}
 	
-	function buildMenu()
+	function buildMenu($pageName)
 	{
 		print ("
 			<H1>Cat's Dog Walking</H1>
 			<div id=\"menu\" class=\"topnav\" background-color=\"green\" text=\white\">
-				<a id=\"menu1\" href=\"catsDogWalking.php?page=Home\");\">Home</a>
-				<a id=\"menu2\" href=\"catsDogWalking.php?page=About\">About Us</a>
-				<a id=\"menu3\" href=\"catsDogWalking.php?page=Services\">Services</a>
-				<a id=\"menu4\" href=\"catsDogWalking.php?page=Scheduling\">Schedule Appointment</a>
-				<a id=\"menu5\" href=\"catsDogWalking.php?page=Contact\">Contact Us</a>
+				<a" . ($pageName == 'Home' || $pageName == null?' class="active"':'') . " id=\"menu1\" href=\"catsDogWalking.php?page=Home\");\">Home</a>
+				<a" . ($pageName == 'About'?' class="active"':'') . " id=\"menu2\" href=\"catsDogWalking.php?page=About\">About Us</a>
+				<a" . ($pageName == 'Services'?' class="active"':'') . " id=\"menu3\" href=\"catsDogWalking.php?page=Services\">Services</a>
+				<a" . ($pageName == 'Scheduling'?' class="active"':'') . " id=\"menu4\" href=\"catsDogWalking.php?page=Scheduling\">Schedule Appointment</a>
+				<a" . ($pageName == 'Contact'?' class="active"':'') . " id=\"menu5\" href=\"catsDogWalking.php?page=Contact\">Contact Us</a>
 			</div>
 		");
 	}

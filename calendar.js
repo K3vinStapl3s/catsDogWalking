@@ -8,7 +8,10 @@ PHP file call location:	Line 28
 
 //Event Listener for the 'nextMonth' button element nextMonth() function on click which calls buildNewCalendar(newDate)
 //repopulating the calendar element
-document.getElementById('nextMonth').addEventListener('click', function() { nextMonth() });
+document.getElementById('nextMonth').addEventListener('click', function(event) { if (event.target.className == 'active') nextMonth() });
+
+//Event Listener for prior month
+document.getElementById('priorMonth').addEventListener('click', function(event) { if (event.target.className == 'active') priorMonth(); });
 
 //Event Listener populates the 'calendar' element with days of the month
 // as well as populating the 'month' and 'year' elements with appropriate text
@@ -16,7 +19,7 @@ document.addEventListener('load', buildCalendar());
 
 //Event Listener for any click events within the calendar element, 
 //if the target ID is not empty opens "bookAppointment.php?date=(decision based on target ID)
-document.getElementById('calendar').addEventListener('click', function(event) { if (!(event.target.id == null)) openBookAppointment(event.target.id) });
+document.getElementById('calendar').addEventListener('click', function(event) { if (event.target.id != "") openBookAppointment(event.target.id) });
 
 //Repopulates the calendar element using the date passed in by nextMonth() or priorMonth()
 function buildNewCalendar(newDate)
@@ -26,7 +29,7 @@ function buildNewCalendar(newDate)
 	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	const daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 	var calendar = document.getElementById('calendar');
-	var priorMonthDay = (daysInMonth[dt.getMonth() -1 ]-(dt.getDay()-1));
+	var priorMonthDay = (daysInMonth[ dt.getMonth() -1 ]-(dt.getDay()-1));
 	
 	//sets 'month' and 'year' elements text 
 	document.getElementById('month').innerHTML = monthName[dt.getMonth()];
@@ -39,7 +42,6 @@ function buildNewCalendar(newDate)
 		{
 			while  (r == 1 && c < dt.getDay())
 			{
-				
 				calendar.rows[r].cells[c].innerHTML = priorMonthDay;
 				c++;
 				priorMonthDay++;
@@ -113,10 +115,12 @@ function buildCalendar()
 	const daysInMonth = [31,28,31,30,31,30,31,31,30,31,31,30];
 	var dt = new Date(Date.now());
 	var calendar = document.getElementById('calendar');
-	var priorMonthDay = (daysInMonth[dt.getMonth() - 1]-(dt.getDay()-1));
 	
 	// setting dt variable to 1 to start populating calendar from 1
 	dt.setDate(1);
+	var priorMonthDay = (daysInMonth[dt.getMonth() - 1]-(dt.getDay()-1));
+	
+	
 	
 	//sets text for the 'month' and 'year' elements
 	document.getElementById('month').innerHTML = monthName[dt.getMonth()];
@@ -164,5 +168,43 @@ function nextMonth()
 		newDate.setMonth(0);
 		newDate.setFullYear(newDate.getFullYear() + 1);
 	}
+	setButtonClass(newDate);
 	buildNewCalendar(newDate);
 }
+
+//sets the date of the prior month and submits to buildCalendar(newDate)
+function priorMonth()
+{
+	var newDate = new Date(Date.now());
+	newDate.setDate(1);
+	newDate.setFullYear(document.getElementById("year").innerHTML);
+	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var month = document.getElementById("month").innerHTML;
+	var currentMonth = monthName.indexOf(month);
+	if (currentMonth != 0)
+		newDate.setMonth(currentMonth - 1);
+	else
+	{
+		newDate.setMonth(0);
+		newDate.setFullYear(newDate.getFullYear() - 1);
+	}
+	setButtonClass(newDate);
+	buildNewCalendar(newDate);
+}
+
+function setButtonClass(newDate)
+{
+	var testDate = new Date(Date.now());
+	if (newDate >= testDate)
+		document.getElementById('priorMonth').className = "active";
+	else
+		document.getElementById('priorMonth').className = "inactive";
+	
+	testDate.setFullYear(testDate.getFullYear() + 1);
+	testDate.setMonth(testDate.getMonth() - 1);
+	if (newDate <= (testDate))
+		document.getElementById('nextMonth').className = "active";
+	else
+		document.getElementById('nextMonth').className = "inactive";
+}
+	
