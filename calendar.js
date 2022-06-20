@@ -25,29 +25,28 @@ document.getElementById('calendar').addEventListener('click', function(event) { 
 function buildNewCalendar(newDate)
 {
 	//Variable declaration
-	var dt = newDate;
 	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	const daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 	var calendar = document.getElementById('calendar');
-	var priorMonthDay = (daysInMonth[ dt.getMonth() -1 ]-(dt.getDay()-1));
+	var priorMonthDay = (daysInMonth[ newDate.getMonth() -1 ]-(newDate.getDay()-1));
 	
 	//sets 'month' and 'year' elements text 
-	document.getElementById('month').innerHTML = monthName[dt.getMonth()];
-	document.getElementById('year').innerHTML = dt.getFullYear();
+	document.getElementById('month').innerHTML = monthName[newDate.getMonth()];
+	document.getElementById('year').innerHTML = newDate.getFullYear();
 	
 	//loops through the 'calendar' element setting cell text to the appropriate day
 	for (let r = 1, day = 1; r <= 5; r++)
 	{
 		for (let c = 0; c < 7; c++)
 		{
-			while  (r == 1 && c < dt.getDay())
+			while  (r == 1 && c < newDate.getDay())
 			{
 				calendar.rows[r].cells[c].innerHTML = priorMonthDay;
 				c++;
 				priorMonthDay++;
 			}
 			
-			if (day <= daysInMonth[dt.getMonth()])
+			if (day <= daysInMonth[newDate.getMonth()])
 			{
 				calendar.rows[r].cells[c].innerHTML = (day);
 				day++;
@@ -100,56 +99,31 @@ function openBookAppointment(tdElementId)
 		else
 			dt.setMonth(dt.getMonth() + 1);
 	}
-	
+	//declares date variable 'tomorrow' and sets it to midnight tomorrow then checks if the date clicked is prior to the current date and
 	//declares the urlString variable then uses that variable to open the new bookAppointment.php window
-	var urlString = "bookAppointment.php?date=" + dt.getMonth() + "-" + dt.getDate() + "-" + dt.getFullYear();
-	window.open(urlString, "BookAppointment", "height=250, width=350, resizable=no, toolbar=no, menubar=no, location=no");
+	var tomorrow = new Date(Date.now());
+	tomorrow.setHours(0);
+	tomorrow.setMinutes(0);
+	tomorrow.setSeconds(0);
+	tomorrow.setMilliseconds(0);
+	tomorrow.setDate(tomorrow.getDate() + 1);
+	console.log("tomorrow: " + tomorrow.getTime() + " : " + tomorrow);
+	console.log("dt: " + dt.getTime() + " : " + dt);
+	console.log("dt < tomorrow: " + (dt.getTime() < tomorrow.getTime()));
+	if (dt.getTime() < tomorrow.getTime())
+	{
+		var urlString = "bookAppointment.php?date=" + dt.getMonth() + "-" + dt.getDate() + "-" + dt.getFullYear();
+		window.open(urlString, "BookAppointment", "height=250, width=350, resizable=no, toolbar=no, menubar=no, location=no");
+	}
 }
 
-// function called by an onLoad event listener populates the 'calendar' element on initial page load using the current
-// date to set the 'calendar' element to the current month and year also sets the 'month' and 'year' elements
+// function called by an onLoad event listener populates the 'calendar' element on initial page load by passing
+//current date to buildNewCalendar(newDate)
 function buildCalendar()
 {
-	// variable declaration
-	const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	const daysInMonth = [31,28,31,30,31,30,31,31,30,31,31,30];
 	var dt = new Date(Date.now());
-	var calendar = document.getElementById('calendar');
-	
-	// setting dt variable to 1 to start populating calendar from 1
 	dt.setDate(1);
-	var priorMonthDay = (daysInMonth[dt.getMonth() - 1]-(dt.getDay()-1));
-	
-	
-	
-	//sets text for the 'month' and 'year' elements
-	document.getElementById('month').innerHTML = monthName[dt.getMonth()];
-	document.getElementById('year').innerHTML = dt.getFullYear();
-	
-	//loops through the calendar object setting the text of each cell
-	for (let r = 1, day = 1; r <= 5; r++)
-	{
-		for (let c = 0; c < 7; c++)
-		{
-			while  (r == 1 && c < dt.getDay())
-			{
-				calendar.rows[r].cells[c].innerHTML = priorMonthDay;
-				c++;
-				priorMonthDay++;
-			}
-			if (day <= daysInMonth[dt.getMonth()])
-			{	
-				calendar.rows[r].cells[c].innerHTML = (day);
-				day++;
-			}
-			else
-			{
-				day = 1;
-				calendar.rows[r].cells[c].innerHTML = (day);
-				day++;
-			}
-		}
-	}	
+	buildNewCalendar(dt); 
 }
 
 //sets the date of the next month and submits to buildCalendar(newDate)
@@ -192,6 +166,8 @@ function priorMonth()
 	buildNewCalendar(newDate);
 }
 
+//switchs the class of the next/priorMonth buttons between active/inactive if calendar is on present month or 12 months ahead of present
+//takes newDate from nextMonth() and compares it against testDate which is calculated below
 function setButtonClass(newDate)
 {
 	var testDate = new Date(Date.now());
@@ -207,4 +183,3 @@ function setButtonClass(newDate)
 	else
 		document.getElementById('nextMonth').className = "inactive";
 }
-	
